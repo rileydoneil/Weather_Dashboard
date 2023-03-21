@@ -28,14 +28,27 @@ main {
 }
 
 .dashboard {
-    border-style: solid;
-    border-width: 1%;
-    border-color: black;
     min-width: 60%;
     max-width: 70%;
 }
+
+.currentForecast {
+    border-style: solid;
+    border-width: 1%;
+    border-color: black;
+}
+
 .searchSide {
     min-width: 20%;
     max-width: 20%;
     margin-right: 1%;
+}
+
+.dayCard {
+    border-style: solid;
+    border-width: 1%;
+    border-color: black;
+    background-color: #35363f;
+    color: aliceblue;
+    min-width: 13%;
 }

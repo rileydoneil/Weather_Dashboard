@@ -4,6 +4,8 @@ const apiKey = '06b63c561cdc9ca0364d1251b4ac94a7';
 var locations = [];
 
 var searchBTN = document.querySelector('#btn');
+var weekForecast = document.querySelector('.weekForecast');
+
 
 //search funcitonality
 searchBTN.addEventListener('click', function(event) {
@@ -14,19 +16,19 @@ searchBTN.addEventListener('click', function(event) {
     fetch('https://api.openweathermap.org/geo/1.0/direct?q=' + search + ',US&limit=' +'&appid=' + apiKey)
       .then(response => response.json())
       .then(response => {
-        console.log("Heres the city to data ");
+        console.log("Heres the city to data");
         console.log(response[0]);
-        getWeather(response[0]);
+        getWeather5day(response[0]);
       })
       .catch(err => console.error(err));
 
 })
 
 //populate cards
-const getWeather = function(data) {
+const getWeather5day = function(data) {
     // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
     // fetch('api.openweathermap.org/data/2.5/forecast?lat=' + data.lat + '&lon=' + data.lon + '&appid=' + apiKey)
-    fetch('https://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=' + apiKey + '&units=imperial')
+    fetch('https://api.openweathermap.org/data/2.5/forecast?lat=' + data.lat + '&lon=' + data.lon + '&appid=' + apiKey + '&units=imperial')
       .then(response => response.json())
       .then(response => {
         console.log("Heres the data from Weather: ");
@@ -56,12 +58,22 @@ const createCards = function(data) {
             console.log("Here is the mintemp: " + avgTemp + "and humidity" + avgHum );
             if (i == 0) {
                 // https://stackoverflow.com/questions/3163070/javascript-displaying-a-float-to-2-decimal-places
-                document.querySelector('.temp').innerHTML += avgTemp.toFixed(2);
-                document.querySelector('.wind').innerHTML += avgWind.toFixed(2);
-                document.querySelector('.humidity').innerHTML += avgHum.toFixed(2);
+                document.querySelector('.temp').innerHTML += avgTemp.toFixed(2) + '°F';
+                document.querySelector('.wind').innerHTML += avgWind.toFixed(2) + 'MPH';
+                document.querySelector('.humidity').innerHTML += avgHum.toFixed(2) + '%';
             } else {
                 let arr = [avgTemp, avgWind, avgHum];
                 console.log(arr);
+
+                const dayCard = document.createElement('div');
+                dayCard.classList.add('dayCard');
+                dayCard.innerHTML = `
+                <h2>Date</h2>
+                <h5>Temp: ${avgTemp.toFixed(2) + '°F'}</h5>
+                <h5>Wind: ${avgWind.toFixed(2) + 'MPH'}</h5>
+                <h5>Humidity: ${avgHum.toFixed(2) + '%'}</h5>
+                `
+                weekForecast.appendChild(dayCard);
             }
             i += 8;
         }
