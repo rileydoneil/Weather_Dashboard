@@ -27,4 +27,15 @@ main {
     margin: 2% auto;
 }
 
-
+.dashboard {
+    border-style: solid;
+    border-width: 1%;
+    border-color: black;
+    min-width: 60%;
+    max-width: 70%;
+}
+.searchSide {
+    min-width: 20%;
+    max-width: 20%;
+    margin-right: 1%;
+}

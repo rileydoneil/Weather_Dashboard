@@ -15,21 +15,33 @@
       <h1>Weather Dashboard</h1>
   </header>
 
-  <main>
-    <div class="searchSide">
-        <h2>Search for a City:</h2>
-        <div class="input-group">
-            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-            <button type="button" class="btn btn-outline-primary">search</button>
-        </div>
-        
-    </div>
+  <main class="container">
+    <div class="h-100 w-100 d-flex flex-row align-items-start ">
+      <div class="searchSide flex-fill ">
+          <h2>Search for a City:</h2>
+          <div class="input-group">
+              <input type="search" class="form-control rounded searchText" placeholder="City, State" aria-label="Search" aria-describedby="search-addon" />
+              <button type="button" class="btn btn-outline-primary searchBTN" id="btn" >search</button>
+          </div>
+          
+      </div>
 
-    <div class="dashboard">
-
+      <div class="dashboard flex-fill">
+        <!-- todays forecast -->
+          <div class="currentForecast">
+            <h1>Todays Forecast</h1>
+            <h4 class="temp">Temp: </h3>
+            <h4 class="wind">Wind: </h3>
+            <h4 class="humidity">Humidity: </h3>
+          </div>
+        <!--5 day forecast  -->
+          <div class="weekForecast">
+            
+          </div>
+      </div>
     </div>
   </main>
-
+  <script src="./assets/js/script.js"></script>
 </body>
 
 </html>
