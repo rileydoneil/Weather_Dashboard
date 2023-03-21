@@ -11,7 +11,7 @@ searchBTN.addEventListener('click', function(event) {
     event.preventDefault;
     var search = document.querySelector('.searchText').value;
     locations.push(search);
-    fetch('http://api.openweathermap.org/geo/1.0/direct?q=' + search + ',US&limit=' +'&appid=' + apiKey)
+    fetch('https://api.openweathermap.org/geo/1.0/direct?q=' + search + ',US&limit=' +'&appid=' + apiKey)
       .then(response => response.json())
       .then(response => {
         console.log("Heres the city to data ");
@@ -26,7 +26,7 @@ searchBTN.addEventListener('click', function(event) {
 const getWeather = function(data) {
     // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
     // fetch('api.openweathermap.org/data/2.5/forecast?lat=' + data.lat + '&lon=' + data.lon + '&appid=' + apiKey)
-    fetch('http://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=' + apiKey + '&units=imperial')
+    fetch('https://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=' + apiKey + '&units=imperial')
       .then(response => response.json())
       .then(response => {
         console.log("Heres the data from Weather: ");
