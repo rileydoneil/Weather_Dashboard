@@ -11,19 +11,28 @@ var lon;
 
 //search funcitonality
 searchBTN.addEventListener('click', function(event) {
-    console.log("hello");
-    event.preventDefault;
-    search = document.querySelector('.searchText').value;
-    locations.push(search);
-    fetch('https://api.openweathermap.org/geo/1.0/direct?q=' + search + ',US&limit=' +'&appid=' + apiKey)
-      .then(response => response.json())
-      .then(response => {
-        console.log("Heres the city to data");
-        console.log(response[0]);
-        getWeather5day(response[0]);
-        getWeather(response[0]);
-      })
-      .catch(err => console.error(err));
+  event.preventDefault;
+  //Reset all cards and info for next search
+  var dayCards = document.querySelector('.weekForecast');
+  var children = dayCards.children;
+  for(let i = 0; i < children.length; i++) {
+    children[i].remove();
+  }
+  document.querySelector('.temp').innerHTML = "Temp: ";
+  document.querySelector('.wind').innerHTML = "Wind: ";
+  document.querySelector('.humidity').innerHTML = "Humidity: ";
+
+  search = document.querySelector('.searchText').value;
+  locations.push(search);
+  fetch('https://api.openweathermap.org/geo/1.0/direct?q=' + search + ',US&limit=' +'&appid=' + apiKey)
+    .then(response => response.json())
+    .then(response => {
+      console.log("Heres the city to data");
+      console.log(response[0]);
+      getWeather5day(response[0]);
+      getWeather(response[0]);
+    })
+    .catch(err => console.error(err));
 
 })
 
@@ -103,12 +112,24 @@ const createCards = function(data) {
         }
 }
 
+const addStorage = function() {
+
+    localStorage.setItem('locations', JSON.stringify(locations));
+}
+
 //retreive local storage
 const getStorage = function() {
-    var locations = localStorage.getItem('locations');
+    let test = JSON.stringify(localStorage.getItem('locations'));
+    let test2 = JSON.parse(test);
+    locations = JSON.parse(test2);
+    console.log(test2);
+    if(!locations) {
+      locations = [];
+    }
+  debugger;
     if(locations != null) {
-        for (let i =0; i < arr.length; i++) {
-            console.log(arr[i]);
+        for (let i =0; i < locations.length; i++) {
+            console.log(locations[i]);
         }
     }
 }
