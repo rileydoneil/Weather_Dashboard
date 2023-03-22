@@ -5,13 +5,15 @@ var locations = [];
 
 var searchBTN = document.querySelector('#btn');
 var weekForecast = document.querySelector('.weekForecast');
-
+var search;
+var lat;
+var lon;
 
 //search funcitonality
 searchBTN.addEventListener('click', function(event) {
     console.log("hello");
     event.preventDefault;
-    var search = document.querySelector('.searchText').value;
+    search = document.querySelector('.searchText').value;
     locations.push(search);
     fetch('https://api.openweathermap.org/geo/1.0/direct?q=' + search + ',US&limit=' +'&appid=' + apiKey)
       .then(response => response.json())
@@ -39,18 +41,21 @@ const getWeather5day = function(data) {
       .catch(err => console.error(err));
 }
 const getWeather = function(data) {
-    // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
-    // fetch('api.openweathermap.org/data/2.5/forecast?lat=' + data.lat + '&lon=' + data.lon + '&appid=' + apiKey)
+    lat = data.lat;
+    lon = data.lon;
     fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + data.lat + '&lon=' + data.lon + '&appid=' + apiKey + '&units=imperial')
       .then(response => response.json())
       .then(response => {
         console.log("Heres the data from Weather 1 day: ");
         console.log(response);
         createMainCard(response);
+        //adds to local storage after final fetch
+        addStorage();
       })
       .catch(err => console.error(err));
 }
 
+//populating main card
 const createMainCard = function(data) {
     let objMain = data.main;
     let objWind = data.wind;
@@ -65,7 +70,7 @@ const createMainCard = function(data) {
 }
 
 
-//populate weather cards
+//populate 5 day weather cards
 const createCards = function(data) {
     var list = data.list;
         // harcoded numbers to get average each day (8 objects) over 5 days
