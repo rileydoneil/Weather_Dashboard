@@ -5,25 +5,43 @@ var locations = [];
 
 var searchBTN = document.querySelector('#btn');
 var weekForecast = document.querySelector('.weekForecast');
-
+var searchSide = document.querySelector('.searchSide');
+var search;
+var lat;
+var lon;
 
 //search funcitonality
 searchBTN.addEventListener('click', function(event) {
-    console.log("hello");
-    event.preventDefault;
-    var search = document.querySelector('.searchText').value;
-    locations.push(search);
-    fetch('https://api.openweathermap.org/geo/1.0/direct?q=' + search + ',US&limit=' +'&appid=' + apiKey)
-      .then(response => response.json())
-      .then(response => {
-        console.log("Heres the city to data");
-        console.log(response[0]);
-        getWeather5day(response[0]);
-        getWeather(response[0]);
-      })
-      .catch(err => console.error(err));
+  event.stopPropagation;
+  event.preventDefault;
+  search = document.querySelector('.searchText').value;
+  locations.push(search);
+  getCoordinates(search);
 
 })
+
+//seperated fetch because of local storage 
+const getCoordinates = function(search) {
+  //Reset all cards and info for next search
+  var dayCards = document.querySelector('.weekForecast');
+  var children = dayCards.children;
+  for(let i = 0; i < children.length; i++) {
+    children[i].remove();
+  }
+  document.querySelector('.temp').innerHTML = "Temp: ";
+  document.querySelector('.wind').innerHTML = "Wind: ";
+  document.querySelector('.humidity').innerHTML = "Humidity: ";
+
+  fetch('https://api.openweathermap.org/geo/1.0/direct?q=' + search + ',US&limit=' +'&appid=' + apiKey)
+    .then(response => response.json())
+    .then(response => {
+      console.log("Heres the city to data");
+      console.log(response[0]);
+      getWeather5day(response[0]);
+      getWeather(response[0]);
+    })
+    .catch(err => console.error(err));
+}
 
 //populate cards
 const getWeather5day = function(data) {
@@ -39,18 +57,21 @@ const getWeather5day = function(data) {
       .catch(err => console.error(err));
 }
 const getWeather = function(data) {
-    // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
-    // fetch('api.openweathermap.org/data/2.5/forecast?lat=' + data.lat + '&lon=' + data.lon + '&appid=' + apiKey)
+    lat = data.lat;
+    lon = data.lon;
     fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + data.lat + '&lon=' + data.lon + '&appid=' + apiKey + '&units=imperial')
       .then(response => response.json())
       .then(response => {
         console.log("Heres the data from Weather 1 day: ");
         console.log(response);
         createMainCard(response);
+        //adds to local storage after final fetch
+        addStorage();
       })
       .catch(err => console.error(err));
 }
 
+//populating main card
 const createMainCard = function(data) {
     let objMain = data.main;
     let objWind = data.wind;
@@ -65,7 +86,7 @@ const createMainCard = function(data) {
 }
 
 
-//populate weather cards
+//populate 5 day weather cards
 const createCards = function(data) {
     var list = data.list;
         // harcoded numbers to get average each day (8 objects) over 5 days
@@ -98,14 +119,41 @@ const createCards = function(data) {
         }
 }
 
-//retreive local storage
-const getStorage = function() {
-    var locations = localStorage.getItem('locations');
-    if(locations != null) {
-        for (let i =0; i < arr.length; i++) {
-            console.log(arr[i]);
-        }
-    }
+const addStorage = function() {
+
+    localStorage.setItem('locations', JSON.stringify(locations));
 }
 
+//retreive local storage
+const getStorage = function() {
+    let test = JSON.stringify(localStorage.getItem('locations'));
+    //why in gods name do I need to parse twice. Wait is it cause im stringifying a string, but I cant get it to work without stringify :/
+    let test2 = JSON.parse(test);
+    locations = JSON.parse(test2);
+    console.log(test2);
+    if(!locations) {
+      locations = [];
+    } else {
+      for (let i = 0; i < locations.length; i++) {
+        console.log(locations[i]);
+        const locationHistory = document.createElement('div');
+        locationHistory.classList.add('locationHistory');
+        locationHistory.setAttribute("location", locations[i]);
+        locationHistory.innerHTML =  `<h4 location="${locations[i]}">${locations[i]}</h4>`;
+        searchSide.appendChild(locationHistory);
+      
+      }
+      
+    }
+
+}
+
+searchSide.addEventListener('click', function(event) {
+  if(event.target.getAttribute('location')) {
+    console.log(event.target.innerHTML);
+    getCoordinates(event.target.getAttribute('location'))
+  }
+})
+
 getStorage();
+
