@@ -14,6 +14,14 @@ var lon;
 searchBTN.addEventListener('click', function(event) {
   event.stopPropagation;
   event.preventDefault;
+  search = document.querySelector('.searchText').value;
+  locations.push(search);
+  getCoordinates(search);
+
+})
+
+//seperated fetch because of local storage 
+const getCoordinates = function(search) {
   //Reset all cards and info for next search
   var dayCards = document.querySelector('.weekForecast');
   var children = dayCards.children;
@@ -24,14 +32,6 @@ searchBTN.addEventListener('click', function(event) {
   document.querySelector('.wind').innerHTML = "Wind: ";
   document.querySelector('.humidity').innerHTML = "Humidity: ";
 
-  search = document.querySelector('.searchText').value;
-  locations.push(search);
-  getCoordinates(search);
-
-})
-
-//seperated fetch because of local storage 
-const getCoordinates = function(search) {
   fetch('https://api.openweathermap.org/geo/1.0/direct?q=' + search + ',US&limit=' +'&appid=' + apiKey)
     .then(response => response.json())
     .then(response => {
@@ -127,6 +127,7 @@ const addStorage = function() {
 //retreive local storage
 const getStorage = function() {
     let test = JSON.stringify(localStorage.getItem('locations'));
+    //why in gods name do I need to parse twice. Wait is it cause im stringifying a string, but I cant get it to work without stringify :/
     let test2 = JSON.parse(test);
     locations = JSON.parse(test2);
     console.log(test2);
@@ -137,7 +138,8 @@ const getStorage = function() {
         console.log(locations[i]);
         const locationHistory = document.createElement('div');
         locationHistory.classList.add('locationHistory');
-        locationHistory.innerHTML =  `<h4>${locations[i]}</h4>`;
+        locationHistory.setAttribute("location", locations[i]);
+        locationHistory.innerHTML =  `<h4 location="${locations[i]}">${locations[i]}</h4>`;
         searchSide.appendChild(locationHistory);
       
       }
@@ -147,8 +149,9 @@ const getStorage = function() {
 }
 
 searchSide.addEventListener('click', function(event) {
-  if(event.target.classList.contains('locationHistory')) {
+  if(event.target.getAttribute('location')) {
     console.log(event.target.innerHTML);
+    getCoordinates(event.target.getAttribute('location'))
   }
 })
 
