@@ -5,12 +5,14 @@ var locations = [];
 
 var searchBTN = document.querySelector('#btn');
 var weekForecast = document.querySelector('.weekForecast');
+var searchSide = document.querySelector('.searchSide');
 var search;
 var lat;
 var lon;
 
 //search funcitonality
 searchBTN.addEventListener('click', function(event) {
+  event.stopPropagation;
   event.preventDefault;
   //Reset all cards and info for next search
   var dayCards = document.querySelector('.weekForecast');
@@ -24,6 +26,12 @@ searchBTN.addEventListener('click', function(event) {
 
   search = document.querySelector('.searchText').value;
   locations.push(search);
+  getCoordinates(search);
+
+})
+
+//seperated fetch because of local storage 
+const getCoordinates = function(search) {
   fetch('https://api.openweathermap.org/geo/1.0/direct?q=' + search + ',US&limit=' +'&appid=' + apiKey)
     .then(response => response.json())
     .then(response => {
@@ -33,8 +41,7 @@ searchBTN.addEventListener('click', function(event) {
       getWeather(response[0]);
     })
     .catch(err => console.error(err));
-
-})
+}
 
 //populate cards
 const getWeather5day = function(data) {
@@ -125,13 +132,25 @@ const getStorage = function() {
     console.log(test2);
     if(!locations) {
       locations = [];
+    } else {
+      for (let i = 0; i < locations.length; i++) {
+        console.log(locations[i]);
+        const locationHistory = document.createElement('div');
+        locationHistory.classList.add('locationHistory');
+        locationHistory.innerHTML =  `<h4>${locations[i]}</h4>`;
+        searchSide.appendChild(locationHistory);
+      
+      }
+      
     }
-  debugger;
-    if(locations != null) {
-        for (let i =0; i < locations.length; i++) {
-            console.log(locations[i]);
-        }
-    }
+
 }
 
+searchSide.addEventListener('click', function(event) {
+  if(event.target.classList.contains('locationHistory')) {
+    console.log(event.target.innerHTML);
+  }
+})
+
 getStorage();
+
